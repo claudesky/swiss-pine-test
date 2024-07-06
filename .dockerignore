@@ -1,0 +1,15 @@
+.git
+node_modules
+dist
+terraform
+README.md
+.env*
+jest.config.js
+.vscode
+.gitignore
+tests
+azure-pipelines.yml
+.prettierrc
+*.tsbuildinfo
+docker-compose.yml
+coverage

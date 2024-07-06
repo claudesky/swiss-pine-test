@@ -1,0 +1,32 @@
+trigger:
+  - main
+
+pool:
+  name: Default
+
+jobs:
+  - job: Test
+    steps:
+      - task: UseNode@1
+        inputs:
+          version: '22.x'
+        displayName: 'Install Node.js'
+
+      - script: |
+          npm ci
+        displayName: 'install dependencies'
+
+      - script: |
+          npm run test
+        displayName: 'run tests'
+  - job: Build
+    dependsOn: Test
+    condition: succeeded()
+    steps:
+      - task: Docker@2
+        displayName: Build the image
+        inputs:
+          repository: $(app_name)
+          command: buildAndPush
+          containerRegistry: $(registry_service_id)
+          tags: latest,$(Build.BuildId)
