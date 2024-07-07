@@ -30,3 +30,40 @@ jobs:
           command: buildAndPush
           containerRegistry: $(registry_service_id)
           tags: latest,$(Build.BuildId)
+  - job: Deploy
+    dependsOn: Build
+    steps:
+      - task: Cache@2
+        inputs:
+          key: '1.9.1'
+          path: 'terraform_1.9.1_linux_amd64.zip'
+
+      - script: |
+          test -f terraform_1.9.1_linux_amd64.zip || wget https://releases.hashicorp.com/terraform/1.9.1/terraform_1.9.1_linux_amd64.zip
+          mkdir bin
+          unzip terraform_1.9.1_linux_amd64.zip -d bin
+        displayName: 'install terraform'
+
+
+      - task: Cache@2
+        inputs:
+          key: '0.58.10'
+          path: terragrunt_linux_amd64
+
+      - script: |
+          export TERRAGRUNT_TFPATH=$(pwd)/bin/terraform
+          test -f terragrunt_linux_amd64 || wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.58.10/terragrunt_linux_amd64
+          cp terragrunt_linux_amd64 terragrunt
+          chmod u+x terragrunt
+        displayName: 'install terragrunt'
+
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'azurerm_service_connection'
+          scriptType: bash
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            cd terraform/deployments/dev/sea/app
+            terragrunt --terragrunt-non-interactive run-all apply --auto-approve --var "app_version=$()"
+        env:
+          TF_VAR_app_version: $(Build.BuildId)
