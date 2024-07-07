@@ -1,5 +1,5 @@
 locals {
-  site_name                              = "Global"
+  site_name                              = "GLOBAL"
   location                               = "southeastasia"
   resource_group_name                    = "infra"
   deployment_storage_resource_group_name = "infra"
