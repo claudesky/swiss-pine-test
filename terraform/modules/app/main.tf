@@ -17,6 +17,11 @@ resource "helm_release" "app" {
   chart      = "./charts/app/app-1.0.0.tgz"
   namespace  = var.name
   create_namespace = true
+
+  set {
+    name = "image.repository"
+    value = "${var.acr_name}.azurecr.io/${var.name}"
+  }
   set {
     name = "image.tag"
     value = var.app_version

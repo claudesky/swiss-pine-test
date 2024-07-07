@@ -12,6 +12,7 @@ terraform {
 
 inputs = {
   name = "swiss-pine"
+  acr_name = "swisspineorgregistry"
   kube_context = dependency.cluster.outputs.context
   cluster_subnet_id = dependency.cluster.outputs.cluster_subnet_id
   cluster_vnet_name = dependency.cluster.outputs.cluster_vnet_name

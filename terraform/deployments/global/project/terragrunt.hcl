@@ -11,6 +11,6 @@ terraform {
 }
 
 inputs = {
-  azurecr_name = dependency.registry.outputs.registry.name
+  azurecr_name = dependency.registry.outputs.registry_name
   app_name = "swiss-pine"
 }

@@ -10,6 +10,8 @@ variable "cluster_vnet_id" {}
 
 variable "cluster_subnet_id" {}
 
+variable "acr_name" {}
+
 variable "name" {}
 
 variable "db_name" {}

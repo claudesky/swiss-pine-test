@@ -38,5 +38,6 @@ dependency "registry" {
 inputs = {
   name = "cluster-1"
   context = local.context
-  acr_id = dependency.registry.outputs.registry.id
+  acr_id = dependency.registry.outputs.registry_id
+  acr_name = dependency.registry.outputs.registry_name
 }

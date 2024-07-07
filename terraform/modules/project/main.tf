@@ -64,3 +64,31 @@ resource "azuredevops_pipeline_authorization" "registry" {
   resource_id = azuredevops_serviceendpoint_azurecr.registry.id
   type        = "endpoint"
 }
+
+resource "azurerm_user_assigned_identity" "identity" {
+  location            = var.location
+  name                = "pipeline-identity"
+  resource_group_name = var.resource_group_name
+}
+
+resource "azuredevops_serviceendpoint_azurerm" "azurerm_service_endpoint" {
+  project_id                             = azuredevops_project.project.id
+  service_endpoint_name                  = "azurerm_service_connection"
+  description                            = "Managed by Terraform"
+  service_endpoint_authentication_scheme = "WorkloadIdentityFederation"
+  credentials {
+    serviceprincipalid = azurerm_user_assigned_identity.identity.client_id
+  }
+  azurerm_spn_tenantid      = var.tenant_id
+  azurerm_subscription_id   = var.subscription_id
+  azurerm_subscription_name = var.subcription_name
+}
+
+resource "azurerm_federated_identity_credential" "example" {
+  name                = "example-federated-credential"
+  resource_group_name = var.resource_group_name
+  parent_id           = azurerm_user_assigned_identity.identity.id
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = azuredevops_serviceendpoint_azurerm.azurerm_service_endpoint.workload_identity_federation_issuer
+  subject             = azuredevops_serviceendpoint_azurerm.azurerm_service_endpoint.workload_identity_federation_subject
+}

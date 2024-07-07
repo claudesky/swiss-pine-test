@@ -1,11 +1,6 @@
 locals {
   env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   site_vars = read_terragrunt_config(find_in_parent_folders("site.hcl"))
-  subscription_id                        = local.env_vars.locals.subscription_id
-  client_id                              = local.env_vars.locals.client_id
-  tenant_id                              = local.env_vars.locals.tenant_id
-  deployment_storage_resource_group_name = local.site_vars.locals.deployment_storage_resource_group_name
-  deployment_storage_account_name        = local.site_vars.locals.deployment_storage_account_name
 }
 
 generate "provider" {
@@ -38,9 +33,9 @@ remote_state {
     if_exists = "overwrite"
   }
   config = {
-    subscription_id      = local.subscription_id
-    resource_group_name  = local.deployment_storage_resource_group_name
-    storage_account_name = local.deployment_storage_account_name
+    subscription_id      = get_env("ARM_SUBSCRIPTION_ID")
+    resource_group_name  = "infra"
+    storage_account_name = "swisspineinfrastorage"
     container_name       = "terraform-state"
     key                  = "${path_relative_to_include("deployments")}/terraform.tfstate"
   }
