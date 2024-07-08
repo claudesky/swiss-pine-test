@@ -61,6 +61,6 @@ jobs:
           inlineScript: |
             source terraform/scripts/ci-principal.sh
             cd terraform/deployments/dev/sea/app
-            terragrunt --terragrunt-non-interactive run-all apply --auto-approve --var "app_version=$()"
+            yes | terragrunt run-all apply --auto-approve
         env:
           TF_VAR_app_version: $(Build.BuildId)
