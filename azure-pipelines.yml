@@ -33,27 +33,23 @@ jobs:
   - job: Deploy
     dependsOn: Build
     steps:
+      - script: |
+          mkdir bin
       - task: Cache@2
         inputs:
-          key: '1.9.1'
-          path: 'terraform_1.9.1_linux_amd64.zip'
+          key: '"tools"'
+          path: 'bin'
 
       - script: |
-          test -f terraform_1.9.1_linux_amd64.zip || wget https://releases.hashicorp.com/terraform/1.9.1/terraform_1.9.1_linux_amd64.zip
-          mkdir bin
+          test -f bin/terraform_1.9.1_linux_amd64.zip || wget https://releases.hashicorp.com/terraform/1.9.1/terraform_1.9.1_linux_amd64.zip -P bin/
+          cp bin/terraform_1.9.1_linux_amd64.zip ./
           unzip terraform_1.9.1_linux_amd64.zip -d bin
         displayName: 'install terraform'
 
-
-      - task: Cache@2
-        inputs:
-          key: '0.58.10'
-          path: terragrunt_linux_amd64
-
       - script: |
           export TERRAGRUNT_TFPATH=$(pwd)/bin/terraform
-          test -f terragrunt_linux_amd64 || wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.58.10/terragrunt_linux_amd64
-          cp terragrunt_linux_amd64 terragrunt
+          test -f bin/terragrunt_linux_amd64 || wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.58.10/terragrunt_linux_amd64 -P bin/
+          cp bin/terragrunt_linux_amd64 terragrunt
           chmod u+x terragrunt
         displayName: 'install terragrunt'
 
@@ -63,6 +59,7 @@ jobs:
           scriptType: bash
           scriptLocation: 'inlineScript'
           inlineScript: |
+            source terraform/scripts/ci-principal.sh
             cd terraform/deployments/dev/sea/app
             terragrunt --terragrunt-non-interactive run-all apply --auto-approve --var "app_version=$()"
         env:
