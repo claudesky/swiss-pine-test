@@ -46,7 +46,7 @@ fi
 # check for service principal credentials
 if [ $(az keyvault secret list --vault-name $VAULT_NAME --query "[?name == '$SECRET_NAME'] | [0] != null") = false ]; then
   echo "Creating service principal..."
-  SP_CREDENTIALS=($(az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/$ARM_SUBSCRIPTION_ID" --query "[appId,password]" --out tsv))
+  SP_CREDENTIALS=($(az ad sp create-for-rbac --role="Owner" --scopes="/subscriptions/$ARM_SUBSCRIPTION_ID" --query "[appId,password]" --out tsv))
   echo "Saving to secret in vault..."
   az keyvault secret set -n $SECRET_NAME --vault-name $VAULT_NAME --value ${SP_CREDENTIALS[0]},${SP_CREDENTIALS[1]}
 else
