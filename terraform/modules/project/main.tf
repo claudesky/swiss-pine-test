@@ -1,3 +1,6 @@
+data "azurerm_subscription" "primary" {
+}
+
 resource "azuredevops_project" "project" {
   name               = var.app_name
   visibility         = "private"
@@ -65,10 +68,28 @@ resource "azuredevops_pipeline_authorization" "registry" {
   type        = "endpoint"
 }
 
+resource "azuredevops_pipeline_authorization" "azurerm" {
+  project_id  = azuredevops_project.project.id
+  resource_id = azuredevops_serviceendpoint_azurerm.azurerm_service_endpoint.id
+  type        = "endpoint"
+}
+
 resource "azurerm_user_assigned_identity" "identity" {
   location            = var.location
   name                = "pipeline-identity"
   resource_group_name = var.resource_group_name
+}
+
+resource "azurerm_role_assignment" "pipline_role" {
+  scope                = data.azurerm_subscription.primary.id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.identity.principal_id
+}
+
+resource "azurerm_role_assignment" "pipline_access_keyvault" {
+  scope                = data.azurerm_subscription.primary.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = azurerm_user_assigned_identity.identity.principal_id
 }
 
 resource "azuredevops_serviceendpoint_azurerm" "azurerm_service_endpoint" {
