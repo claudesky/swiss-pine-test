@@ -22,9 +22,11 @@ A test application for Swiss Pine
 ### Azure DevOps Setup
 
 Create an ADO Personal Access Token (PAT)
+
 https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate
 
 Setup SSH keys to be able to push code to repositories in ADO
+
 https://learn.microsoft.com/en-us/azure/devops/repos/git/use-ssh-keys-to-authenticate
 
 ### Initialization Scripts
@@ -46,14 +48,23 @@ You can also re-source this script to reload the required environment variables 
 
 The init-backend script initializes the storage for terraform state. You only need to run this once.
 
+---
+
 ### Deploying the Project and Azure Container Registry
 
 Export your ADO Organization URL and PAT as environment variables to allow terraform to create resources in ADO.
 
+```
+export AZDO_ORG_SERVICE_URL=https://dev.azure.com/<myorg>/
+export AZDO_PERSONAL_ACCESS_TOKEN=<PAT>
+```
+
 Set `./terraform/deployments/global/project` as your current working directory and run terragrunt with the `run-all` command to include setup of the registry.
 
-`cd terraform/deployments/global/project`
-`terragrunt run-all apply`
+```
+cd terraform/deployments/global/project
+terragrunt run-all apply
+```
 
 ### Push the code
 
