@@ -39,12 +39,14 @@ jobs:
         inputs:
           key: '"tools"'
           path: 'bin'
+          cacheHitVar: CACHE_RESTORED
 
       - script: |
           test -f bin/terraform_1.9.1_linux_amd64.zip || wget https://releases.hashicorp.com/terraform/1.9.1/terraform_1.9.1_linux_amd64.zip -P bin/
           cp bin/terraform_1.9.1_linux_amd64.zip ./
           unzip terraform_1.9.1_linux_amd64.zip -d bin
         displayName: 'install terraform'
+        condition: ne(variables.CACHE_RESTORED, 'true')
 
       - script: |
           export TERRAGRUNT_TFPATH=$(pwd)/bin/terraform
