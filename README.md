@@ -70,6 +70,17 @@ In case a manual deploy is required, it can be done after the image is successfu
 `cd terraform/deployments/dev/sea/app`
 `terragrunt run-all apply --auto-approve --var "app_version=latest"`
 
+## Test the API
+
+Assuming you are already logged in to the azure cli;
+
+- Get credentials to connect to the cluster
+    `az aks get-credentials -g dev-sea -n cluster-1 --context dev-sea-cluster-1`
+- Get details of the swiss-pine service
+    `kubectl get service --namespace swiss-pine`
+- Connect to the exposed EXTERNAL-IP
+    `curl http://*EXTERNAL_IP*/api/mirror?word=fOoBar25`
+
 # Regarding Scaling of Customers
 
 Infrastructure (terragrunt/terraform files) should be moved to a separate repository. That repository will handle deployments for each customer.
