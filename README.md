@@ -57,6 +57,19 @@ Set `./terraform/deployments/global/project` as your current working directory a
 
 ### Push the code
 
+Open the Project Repository in ADO, copy and set the SSH url as the origin for the git repository.
+
+Push your changes to the `main` branch.
+
+You should be able to see the deployment pipeline in the ADO dashboard.
+
+## Manual Deployment
+
+In case a manual deploy is required, it can be done after the image is successfully built and pushed to the registry by the pipeline.
+
+`cd terraform/deployments/dev/sea/app`
+`terragrunt run-all apply --auto-approve --var "app_version=latest"`
+
 # Regarding Scaling of Customers
 
 Infrastructure (terragrunt/terraform files) should be moved to a separate repository. That repository will handle deployments for each customer.
