@@ -22,3 +22,8 @@ export ARM_CLIENT_ID=${SP_CREDENTIALS[0]}
 export ARM_CLIENT_SECRET=${SP_CREDENTIALS[1]}
 
 echo "Environment loaded."
+
+echo "Authenticating as the service principal..."
+az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+
+echo "CI init complete."
