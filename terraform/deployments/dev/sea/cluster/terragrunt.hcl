@@ -17,15 +17,9 @@ terraform {
   after_hook "after_hook" {
     commands     = ["apply"]
     execute      = [
-      "az",
-      "aks",
-      "get-credentials",
-      "--resource-group",
-      "${local.resource_group_name}",
-      "--name",
-      "${local.name}",
-      "--context",
-      "${local.context}"
+      "/bin/bash",
+      "-c",
+      "echo > ~/.kube/config && az aks get-credentials --resource-group ${local.resource_group_name} --name ${local.name} --context ${local.context}"
     ]
     run_on_error = false
   }
